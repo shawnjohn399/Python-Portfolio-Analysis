@@ -1,0 +1,238 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNwRD9yb0rUFoq4wE4M+YEp",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/shawnjohn399/Python-Portfolio-Analysis/blob/main/Basic%20Scenario%20Analysis\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "nL-hxIMNTzc-",
+        "outputId": "37b29cd3-7b92-463a-d659-5e5ed5290b5b"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "  Stock  Weight\n",
+            "0  MSFT  0.6614\n",
+            "1   UNH  0.2440\n",
+            "2  AAPL  0.0732\n",
+            "3   XOM  0.0211\n",
+            "4  AMZN  0.0000\n"
+          ]
+        }
+      ],
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "\n",
+        "portfolio = pd.DataFrame({\n",
+        "    \"Stock\": [\"MSFT\", \"UNH\", \"AAPL\", \"XOM\", \"AMZN\"],\n",
+        "    \"Weight\": [0.6614, 0.2440, 0.0732, 0.0211, 0.0]\n",
+        "})\n",
+        "\n",
+        "print(portfolio)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "top_two = portfolio.nlargest(2, \"Weight\")\n",
+        "\n",
+        "concentration = top_two[\"Weight\"].sum()\n",
+        "\n",
+        "print(f\"Top two concentration: {concentration:.2%}\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "vM_WLDsNUG_P",
+        "outputId": "7571d98c-e06c-47e2-ee3c-1852c2ba275e"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Top two concentration: 90.54%\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "\n",
+        "weights = portfolio[\"Weight\"].to_numpy()\n",
+        "\n",
+        "weights = weights / np.sum(weights)\n",
+        "\n",
+        "hhi = np.sum(weights ** 2)\n",
+        "\n",
+        "effective_holdings = 1 / hhi\n",
+        "\n",
+        "print(f\"HHI: {hhi:.4f}\")\n",
+        "print(f\"Effective holdings: {effective_holdings:.2f}\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "UCYMNzFbUJy1",
+        "outputId": "763a3a8e-330a-4529-bd26-323ff06f6305"
+      },
+      "execution_count": 4,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "HHI: 0.5031\n",
+            "Effective holdings: 1.99\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Stress test: Microsoft declines 20%\n",
+        "msft_weight = 0.6614\n",
+        "msft_return = -0.20\n",
+        "\n",
+        "portfolio_impact = msft_weight * msft_return\n",
+        "\n",
+        "print(f\"Portfolio impact: {portfolio_impact:.2%}\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "npg2dJXxUXbg",
+        "outputId": "ba0b528a-3335-4911-9e70-db1a514283d2"
+      },
+      "execution_count": 5,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Portfolio impact: -13.23%\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pandas as pd\n",
+        "import numpy as np\n",
+        "\n",
+        "portfolio = pd.DataFrame({\n",
+        "    \"Stock\": [\"MSFT\", \"UNH\", \"AAPL\", \"XOM\", \"AMZN\"],\n",
+        "    \"Weight\": [0.6614, 0.2440, 0.0732, 0.0211, 0.0]\n",
+        "})\n",
+        "\n",
+        "# Hypothetical stress scenario\n",
+        "portfolio[\"Stress_Return\"] = np.array([\n",
+        "    -0.20,  # Microsoft\n",
+        "    -0.10,  # UnitedHealth\n",
+        "    -0.15,  # Apple\n",
+        "    -0.08,  # Exxon\n",
+        "    -0.25   # Amazon\n",
+        "])\n",
+        "\n",
+        "# Calculate each stock's contribution\n",
+        "portfolio[\"Impact\"] = (\n",
+        "    portfolio[\"Weight\"] * portfolio[\"Stress_Return\"]\n",
+        ")\n",
+        "\n",
+        "# Calculate total portfolio impact\n",
+        "total_impact = portfolio[\"Impact\"].sum()\n",
+        "\n",
+        "print(portfolio)\n",
+        "print(f\"Total portfolio impact: {total_impact:.2%}\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "fq9_cebfWjGH",
+        "outputId": "83abbfc0-e23d-486d-bbbe-ca374f8748e4"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "  Stock  Weight  Stress_Return    Impact\n",
+            "0  MSFT  0.6614          -0.20 -0.132280\n",
+            "1   UNH  0.2440          -0.10 -0.024400\n",
+            "2  AAPL  0.0732          -0.15 -0.010980\n",
+            "3   XOM  0.0211          -0.08 -0.001688\n",
+            "4  AMZN  0.0000          -0.25 -0.000000\n",
+            "Total portfolio impact: -16.93%\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "portfolio_value = 1000000\n",
+        "\n",
+        "dollar_loss = portfolio_value * total_impact\n",
+        "\n",
+        "print(f\"Portfolio dollar impact: ${dollar_loss:,.2f}\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "NW8PLriqYsCu",
+        "outputId": "136b2a72-6182-426d-de66-49c06b8ae8e1"
+      },
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Portfolio dollar impact: $-169,348.00\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
